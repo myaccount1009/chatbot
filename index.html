@@ -84,5 +84,108 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="app.js"></script>
+  <script>
+/* ===== সহায়তা চ্যাটবট ===== */
+
+// ★★★ এখানে আপনার Webhook URL বসাবেন (দুই কোটেশনের ভেতরে) ★★★
+const WEBHOOK_URL = "";
+// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+(function () {
+  const css = `
+  #sohayota-btn{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;
+    background:#006a4e;color:#fff;border:none;font-size:28px;cursor:pointer;z-index:9999;
+    box-shadow:0 4px 12px rgba(0,0,0,.3)}
+  #sohayota-box{position:fixed;bottom:90px;right:20px;width:340px;max-width:calc(100vw - 40px);
+    height:460px;max-height:70vh;background:#fff;border-radius:12px;display:none;flex-direction:column;
+    z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.3);overflow:hidden;font-family:inherit}
+  #sohayota-box.open{display:flex}
+  #sohayota-head{background:#006a4e;color:#fff;padding:12px 14px;font-weight:bold;
+    display:flex;justify-content:space-between;align-items:center}
+  #sohayota-head span{cursor:pointer;font-size:20px}
+  #sohayota-msgs{flex:1;overflow-y:auto;padding:12px;background:#f4f6f5}
+  .sh-msg{max-width:80%;padding:8px 12px;border-radius:12px;margin-bottom:8px;
+    white-space:pre-wrap;word-wrap:break-word;font-size:14px;line-height:1.5}
+  .sh-bot{background:#fff;border:1px solid #ddd;margin-right:auto}
+  .sh-user{background:#006a4e;color:#fff;margin-left:auto}
+  #sohayota-form{display:flex;border-top:1px solid #ddd}
+  #sohayota-input{flex:1;border:none;padding:12px;font-size:14px;outline:none}
+  #sohayota-send{background:#006a4e;color:#fff;border:none;padding:0 16px;cursor:pointer;font-size:14px}
+  `;
+  const style = document.createElement("style");
+  style.textContent = css;
+  document.head.appendChild(style);
+
+  const wrap = document.createElement("div");
+  wrap.innerHTML = `
+    <button id="sohayota-btn" title="সহায়তা">💬</button>
+    <div id="sohayota-box">
+      <div id="sohayota-head">সহায়তা <span id="sohayota-close">×</span></div>
+      <div id="sohayota-msgs"></div>
+      <div id="sohayota-form">
+        <input id="sohayota-input" type="text" placeholder="আপনার প্রশ্ন লিখুন..." />
+        <button id="sohayota-send">পাঠান</button>
+      </div>
+    </div>`;
+  document.body.appendChild(wrap);
+
+  const box = document.getElementById("sohayota-box");
+  const msgs = document.getElementById("sohayota-msgs");
+  const input = document.getElementById("sohayota-input");
+
+  let sessionId = localStorage.getItem("sohayota_session");
+  if (!sessionId) {
+    sessionId = "s_" + Math.random().toString(36).slice(2) + Date.now();
+    localStorage.setItem("sohayota_session", sessionId);
+  }
+
+  function addMsg(text, who) {
+    const d = document.createElement("div");
+    d.className = "sh-msg " + (who === "user" ? "sh-user" : "sh-bot");
+    d.textContent = text;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+    return d;
+  }
+
+  addMsg("আসসালামু আলাইকুম! আমি সহায়তা। আপনাকে কীভাবে সাহায্য করতে পারি?", "bot");
+
+  async function send() {
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    addMsg(text, "user");
+
+    if (!WEBHOOK_URL) {
+      addMsg("চ্যাটবট এখনো সংযুক্ত করা হয়নি।", "bot");
+      return;
+    }
+
+    const loading = addMsg("লিখছি...", "bot");
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text, sessionId: sessionId }),
+      });
+      const raw = await res.text();
+      let reply = raw;
+      try {
+        const j = JSON.parse(raw);
+        reply = j.output || j.reply || j.message || j.text || j.response || raw;
+      } catch (e) {}
+      loading.textContent = reply || "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।";
+    } catch (err) {
+      loading.textContent = "দুঃখিত, সংযোগে সমস্যা হয়েছে। আবার চেষ্টা করুন।";
+    }
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  document.getElementById("sohayota-btn").onclick = () => box.classList.toggle("open");
+  document.getElementById("sohayota-close").onclick = () => box.classList.remove("open");
+  document.getElementById("sohayota-send").onclick = send;
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
+})();
+</script>
 </body>
 </html>
