@@ -1,0 +1,61 @@
+:root{
+  --green:#0b5d46; --green-d:#073e2f; --paper:#f7f5ef; --ink:#17211d;
+  --mute:#5d6b65; --line:#d9d6ca; --red:#c8322d; --card:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:'Hind Siliguri',sans-serif;color:var(--ink);background:var(--paper);line-height:1.7}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+
+.top{background:var(--green-d);color:#fff}
+.bar{display:flex;justify-content:space-between;align-items:center;height:60px}
+.brand{font-family:'Anek Bangla';font-weight:800;font-size:1.25rem;text-decoration:none;display:flex;align-items:center;gap:10px}
+.mark{width:22px;height:22px;border-radius:50%;background:var(--red);box-shadow:0 0 0 5px #fff2}
+nav a{margin-left:22px;text-decoration:none;opacity:.9}
+nav a:hover{opacity:1;text-decoration:underline}
+
+.hero{background:var(--green);color:#fff;padding:64px 0 72px}
+.hero h1{font-family:'Anek Bangla';font-weight:800;font-size:clamp(2.2rem,6vw,3.8rem);line-height:1.2;margin:0 0 16px}
+.hero p{max-width:520px;margin:0 0 28px;opacity:.92;font-size:1.1rem}
+.search input{width:100%;max-width:560px;padding:16px 18px;font:inherit;border:0;border-radius:6px}
+
+.block{padding:48px 20px}
+h2{font-family:'Anek Bangla';font-size:1.6rem;margin:0 0 16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.chip{border:1px solid var(--line);background:#fff;padding:6px 16px;border-radius:99px;font:inherit;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--green);color:#fff;border-color:var(--green)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--green);border-radius:4px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.card h3{margin:0;font-size:1.2rem}
+.card p{margin:0;color:var(--mute)}
+.facts{font-size:.92rem;color:var(--mute);margin:4px 0 8px}
+.card .btn{margin-top:auto;align-self:flex-start}
+.empty{color:var(--mute);grid-column:1/-1}
+
+.btn{background:var(--red);color:#fff;border:0;padding:10px 20px;border-radius:4px;font:inherit;font-weight:500;cursor:pointer}
+.btn:hover{filter:brightness(.92)}
+.btn:disabled{opacity:.6;cursor:wait}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+
+.inline{display:flex;gap:10px;flex-wrap:wrap}
+.inline input{flex:1;min-width:220px}
+input,textarea{font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:4px;background:#fff;width:100%}
+.result{min-height:1.6em;margin:12px 0 0;font-weight:500}
+.result.ok{color:var(--green)} .result.err{color:var(--red)}
+
+dialog{border:0;border-radius:6px;padding:24px;width:min(480px,92vw)}
+dialog::backdrop{background:#0008}
+dialog h3{margin:0;font-family:'Anek Bangla';font-size:1.3rem}
+.meta{color:var(--mute);margin:2px 0 14px}
+label{display:block;margin-bottom:12px;font-size:.95rem}
+label input,label textarea{margin-top:4px}
+.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:8px}
+
+footer{border-top:1px solid var(--line);padding:24px 0;color:var(--mute);font-size:.9rem}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.card.job{border-left-color:var(--red)}
+.deadline{font-size:.9rem;color:var(--red);font-weight:500}

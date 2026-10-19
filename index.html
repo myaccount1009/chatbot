@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>নাগরিক সেবা পোর্টাল</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;700&family=Anek+Bangla:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#"><span class="mark"></span>নাগরিক সেবা</a>
+    <nav><a href="#services">সেবাসমূহ</a><a href="#jobs">নিয়োগ</a><a href="#track">আবেদন ট্র্যাক</a></nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <h1>সরকারি সেবা,<br>এক জায়গা থেকেই।</h1>
+      <p>আপনার প্রয়োজনীয় সেবা খুঁজুন, ঘরে বসে আবেদন করুন, আবেদনের অবস্থা দেখুন।</p>
+      <div class="search">
+        <input id="q" type="search" placeholder="সেবার নাম লিখুন, যেমন: জন্ম নিবন্ধন" aria-label="সেবা খুঁজুন">
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="wrap block">
+    <div class="chips" id="chips"></div>
+    <div class="grid" id="list" aria-live="polite"></div>
+  </section>
+
+  <section id="jobs" class="wrap block">
+    <h2>নিয়োগ বিজ্ঞপ্তি</h2>
+    <div class="grid" id="jobList" aria-live="polite"></div>
+  </section>
+
+  <section id="track" class="wrap block">
+    <h2>আবেদনের অবস্থা দেখুন</h2>
+    <form id="trackForm" class="inline">
+      <input id="code" placeholder="ট্র্যাকিং কোড, যেমন: NS1A2B3C4D" required>
+      <button class="btn">অবস্থা দেখুন</button>
+    </form>
+    <p id="trackResult" class="result" role="status"></p>
+  </section>
+</main>
+
+<dialog id="dlg">
+  <form id="applyForm" method="dialog">
+    <h3 id="dlgTitle"></h3>
+    <p id="dlgMeta" class="meta"></p>
+    <label>পূর্ণ নাম <input name="name" required></label>
+    <label>মোবাইল নম্বর <input name="phone" inputmode="tel" pattern="01[3-9][0-9]{8}" placeholder="01XXXXXXXXX" required></label>
+    <label>এনআইডি / জন্ম নিবন্ধন নম্বর <input name="nid"></label>
+    <label>অতিরিক্ত তথ্য <textarea name="details" rows="3"></textarea></label>
+    <p id="applyMsg" class="result" role="status"></p>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="cancel">বাতিল</button>
+      <button class="btn" id="submitBtn">আবেদন জমা দিন</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="jobDlg">
+  <form id="jobForm" method="dialog">
+    <h3 id="jobTitle"></h3>
+    <p id="jobMeta" class="meta"></p>
+    <label>পূর্ণ নাম <input name="name" required></label>
+    <label>মোবাইল নম্বর <input name="phone" inputmode="tel" pattern="01[3-9][0-9]{8}" placeholder="01XXXXXXXXX" required></label>
+    <label>ইমেইল <input name="email" type="email"></label>
+    <label>সর্বশেষ শিক্ষাগত যোগ্যতা <input name="education" required></label>
+    <label>সিভি লিংক (Google Drive ইত্যাদি) <input name="cv" type="url" placeholder="https://"></label>
+    <p id="jobMsg" class="result" role="status"></p>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="jobCancel">বাতিল</button>
+      <button class="btn" id="jobSubmit">আবেদন জমা দিন</button>
+    </div>
+  </form>
+</dialog>
+
+<footer><div class="wrap">© নাগরিক সেবা পোর্টাল — ডেমো প্রকল্প</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
