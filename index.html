@@ -88,7 +88,7 @@
 /* ===== সহায়তা চ্যাটবট ===== */
 
 // ★★★ এখানে আপনার Webhook URL বসাবেন (দুই কোটেশনের ভেতরে) ★★★
-const WEBHOOK_URL = "";
+const WEBHOOK_URL = "https://n8n-f2ty.srv1670697.hstgr.cloud/webhook-test/c4582db6-0e63-4a71-9bbb-e9ef247195af";
 // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
 (function () {
@@ -118,9 +118,9 @@ const WEBHOOK_URL = "";
 
   const wrap = document.createElement("div");
   wrap.innerHTML = `
-    <button id="sohayota-btn" title="সহায়তা">💬</button>
+    <button id="sohayota-btn" title="সহায়ক">💬</button>
     <div id="sohayota-box">
-      <div id="sohayota-head">সহায়তা <span id="sohayota-close">×</span></div>
+      <div id="sohayota-head">সহায়ক <span id="sohayota-close">×</span></div>
       <div id="sohayota-msgs"></div>
       <div id="sohayota-form">
         <input id="sohayota-input" type="text" placeholder="আপনার প্রশ্ন লিখুন..." />
@@ -148,7 +148,7 @@ const WEBHOOK_URL = "";
     return d;
   }
 
-  addMsg("আসসালামু আলাইকুম! আমি সহায়তা। আপনাকে কীভাবে সাহায্য করতে পারি?", "bot");
+  addMsg("আসসালামু আলাইকুম! আমি সহায়ক। আপনাকে কীভাবে সাহায্য করতে পারি?", "bot");
 
   async function send() {
     const text = input.value.trim();
