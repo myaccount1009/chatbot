@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>অ্যাডমিন প্যানেল</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;700&family=Anek+Bangla:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;max-width:760px}
+.form2 .full{grid-column:1/-1}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;background:#fff;font-size:.95rem}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#ece9dd}
+select{font:inherit;padding:6px;border:1px solid var(--line);border-radius:4px}
+.danger{background:transparent;color:var(--red);border:1px solid var(--red);padding:4px 10px}
+.login{max-width:380px;margin:60px auto}
+@media(max-width:600px){.form2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <span class="brand"><span class="mark"></span>অ্যাডমিন প্যানেল</span>
+  <button class="btn ghost" id="logout" hidden style="color:#fff;border-color:#fff6">লগআউট</button>
+</div></header>
+
+<main class="wrap block">
+  <form id="loginForm" class="login">
+    <h2>অ্যাডমিন লগইন</h2>
+    <label>ইমেইল <input id="email" type="email" required></label>
+    <label>পাসওয়ার্ড <input id="pass" type="password" required></label>
+    <button class="btn">লগইন</button>
+    <p id="loginMsg" class="result err" role="status"></p>
+  </form>
+
+  <div id="panel" hidden>
+    <div class="tabs" id="tabs">
+      <button class="chip" data-t="add" aria-pressed="true">নতুন নিয়োগ দিন</button>
+      <button class="chip" data-t="jobs" aria-pressed="false">নিয়োগ তালিকা</button>
+      <button class="chip" data-t="japps" aria-pressed="false">চাকরির আবেদন</button>
+      <button class="chip" data-t="sapps" aria-pressed="false">সেবার আবেদন</button>
+    </div>
+
+    <section id="t-add">
+      <h2>নতুন নিয়োগ বিজ্ঞপ্তি</h2>
+      <form id="jobAdd" class="form2">
+        <label>পদের নাম <input name="title" required></label>
+        <label>প্রতিষ্ঠান <input name="organization" required></label>
+        <label>কর্মস্থল <input name="location"></label>
+        <label>পদ সংখ্যা <input name="vacancies" type="number" min="1" value="1"></label>
+        <label>বেতন <input name="salary"></label>
+        <label>আবেদনের শেষ তারিখ <input name="deadline" type="date" required></label>
+        <label class="full">যোগ্যতা <textarea name="requirements" rows="2"></textarea></label>
+        <label class="full">বিবরণ <textarea name="description" rows="3"></textarea></label>
+        <div class="full"><button class="btn">নিয়োগ প্রকাশ করুন</button><p id="addMsg" class="result" role="status"></p></div>
+      </form>
+    </section>
+    <section id="t-jobs" hidden><h2>নিয়োগ তালিকা</h2><div class="tbl" id="jobsTbl"></div></section>
+    <section id="t-japps" hidden><h2>চাকরির আবেদন</h2><div class="tbl" id="japps"></div></section>
+    <section id="t-sapps" hidden><h2>সেবার আবেদন</h2><div class="tbl" id="sapps"></div></section>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
