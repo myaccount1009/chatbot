@@ -84,18 +84,44 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="app.js"></script>
-  <script>
+<script>
 /* ===== সহায়তা চ্যাটবট ===== */
 
 // ★★★ এখানে আপনার Webhook URL বসাবেন (দুই কোটেশনের ভেতরে) ★★★
 const WEBHOOK_URL = "https://n8n-f2ty.srv1670697.hstgr.cloud/webhook-test/c4582db6-0e63-4a71-9bbb-e9ef247195af";
 // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
+// নোটিফিকেশন সেটিং
+const NOTIFY_TEXT = "আপনার কি সাহায্য প্রয়োজন?";
+const NOTIFY_DELAY = 2000; // কত মিলিসেকেন্ড পর বাবল দেখাবে (২০০০ = ২ সেকেন্ড)
+
 (function () {
   const css = `
   #sohayota-btn{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;
     background:#006a4e;color:#fff;border:none;font-size:28px;cursor:pointer;z-index:9999;
     box-shadow:0 4px 12px rgba(0,0,0,.3)}
+
+  /* লাল ডট */
+  #sohayota-dot{position:fixed;bottom:62px;right:20px;width:16px;height:16px;border-radius:50%;
+    background:#e53935;border:2px solid #fff;z-index:10000;display:none;pointer-events:none}
+  #sohayota-dot.show{display:block;animation:sh-pulse 1.6s infinite}
+  @keyframes sh-pulse{
+    0%{box-shadow:0 0 0 0 rgba(229,57,53,.7)}
+    70%{box-shadow:0 0 0 10px rgba(229,57,53,0)}
+    100%{box-shadow:0 0 0 0 rgba(229,57,53,0)}
+  }
+
+  /* নোটিফিকেশন বাবল */
+  #sohayota-notify{position:fixed;bottom:30px;right:92px;background:#fff;color:#222;
+    padding:10px 30px 10px 14px;border-radius:12px;font-size:14px;line-height:1.4;
+    box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:9999;cursor:pointer;display:none;
+    max-width:calc(100vw - 120px);font-family:inherit}
+  #sohayota-notify.show{display:block;animation:sh-pop .35s ease}
+  #sohayota-notify::after{content:"";position:absolute;right:-7px;top:50%;margin-top:-7px;
+    border-left:8px solid #fff;border-top:7px solid transparent;border-bottom:7px solid transparent}
+  #sohayota-notify-x{position:absolute;top:2px;right:8px;font-size:16px;color:#888;cursor:pointer}
+  @keyframes sh-pop{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+
   #sohayota-box{position:fixed;bottom:90px;right:20px;width:340px;max-width:calc(100vw - 40px);
     height:460px;max-height:70vh;background:#fff;border-radius:12px;display:none;flex-direction:column;
     z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.3);overflow:hidden;font-family:inherit}
@@ -118,7 +144,12 @@ const WEBHOOK_URL = "https://n8n-f2ty.srv1670697.hstgr.cloud/webhook-test/c4582d
 
   const wrap = document.createElement("div");
   wrap.innerHTML = `
+    <div id="sohayota-notify">
+      <span id="sohayota-notify-text"></span>
+      <span id="sohayota-notify-x">×</span>
+    </div>
     <button id="sohayota-btn" title="সহায়ক">💬</button>
+    <div id="sohayota-dot"></div>
     <div id="sohayota-box">
       <div id="sohayota-head">সহায়ক <span id="sohayota-close">×</span></div>
       <div id="sohayota-msgs"></div>
@@ -132,11 +163,40 @@ const WEBHOOK_URL = "https://n8n-f2ty.srv1670697.hstgr.cloud/webhook-test/c4582d
   const box = document.getElementById("sohayota-box");
   const msgs = document.getElementById("sohayota-msgs");
   const input = document.getElementById("sohayota-input");
+  const dot = document.getElementById("sohayota-dot");
+  const notify = document.getElementById("sohayota-notify");
+  document.getElementById("sohayota-notify-text").textContent = NOTIFY_TEXT;
 
   let sessionId = localStorage.getItem("sohayota_session");
   if (!sessionId) {
     sessionId = "s_" + Math.random().toString(36).slice(2) + Date.now();
     localStorage.setItem("sohayota_session", sessionId);
+  }
+
+  /* ---- নোটিফিকেশন ও লাল ডট ---- */
+  function showNotify() {
+    if (box.classList.contains("open")) return;
+    dot.classList.add("show");
+    notify.classList.add("show");
+  }
+  function hideNotify() {
+    dot.classList.remove("show");
+    notify.classList.remove("show");
+  }
+
+  // পেজ লোডের কিছুক্ষণ পর দেখাবে
+  setTimeout(showNotify, NOTIFY_DELAY);
+
+  // শুধু বাবল বন্ধ (লাল ডট থেকে যাবে)
+  document.getElementById("sohayota-notify-x").onclick = (e) => {
+    e.stopPropagation();
+    notify.classList.remove("show");
+  };
+
+  function openChat() {
+    box.classList.add("open");
+    hideNotify();
+    input.focus();
   }
 
   function addMsg(text, who) {
@@ -181,7 +241,10 @@ const WEBHOOK_URL = "https://n8n-f2ty.srv1670697.hstgr.cloud/webhook-test/c4582d
     msgs.scrollTop = msgs.scrollHeight;
   }
 
-  document.getElementById("sohayota-btn").onclick = () => box.classList.toggle("open");
+  document.getElementById("sohayota-btn").onclick = () => {
+    box.classList.contains("open") ? box.classList.remove("open") : openChat();
+  };
+  notify.onclick = openChat; // বাবলে ক্লিক করলেও চ্যাট খুলবে
   document.getElementById("sohayota-close").onclick = () => box.classList.remove("open");
   document.getElementById("sohayota-send").onclick = send;
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
